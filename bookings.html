@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | MeetSpace</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #100b1c;
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 8%;
+            border-bottom: 1px solid #302442;
+        }
+
+        .logo {
+            color: #c4a3ff;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: #d8d0e8;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #c4a3ff;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: 50px auto;
+            padding: 0 24px;
+        }
+
+        .heading {
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .heading h1 span {
+            color: #bd94ff;
+        }
+
+        .heading p {
+            color: #b9aecb;
+            line-height: 1.6;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 22px;
+            margin-bottom: 25px;
+            background: #1b1329;
+            border: 1px solid #382849;
+            border-radius: 15px;
+        }
+
+        .summary p {
+            color: #b9aecb;
+            margin-bottom: 8px;
+        }
+
+        .summary strong {
+            color: #c4a3ff;
+            font-size: 28px;
+        }
+
+        .refresh {
+            background: #a875f5;
+            color: #160d27;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .table-card {
+            background: #1b1329;
+            border: 1px solid #382849;
+            border-radius: 16px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #302442;
+            font-size: 14px;
+        }
+
+        th {
+            background: #241832;
+            color: #cdb3ff;
+        }
+
+        td {
+            color: #e4d9f5;
+        }
+
+        tbody tr:hover {
+            background: #211630;
+        }
+
+        .cancel {
+            background: #512334;
+            color: #ffb7c5;
+            border: 1px solid #79384f;
+            padding: 9px 13px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .cancel:hover {
+            background: #713047;
+        }
+
+        #message {
+            padding: 25px;
+            text-align: center;
+            color: #b9aecb;
+            line-height: 1.6;
+        }
+
+        .error {
+            color: #ffb4c0 !important;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #c4a3ff;
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #9588a9;
+            border-top: 1px solid #302442;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 700px) {
+            nav {
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            nav a {
+                margin: 0 5px;
+            }
+
+            .heading h1 {
+                font-size: 30px;
+            }
+
+            .summary {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">✦ MeetSpace</div>
+
+        <div>
+            <a href="index.html">Home</a>
+            <a href="book.html">Book a Room</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="heading">
+            <h1>My <span>Bookings.</span></h1>
+            <p>View your meeting reservations and manage your schedule.</p>
+        </section>
+
+        <section class="summary">
+            <div>
+                <p>Total Reservations</p>
+                <strong id="bookingCount">0</strong>
+            </div>
+
+            <button class="refresh" id="refreshButton" onclick="loadBookings()">
+                ↻ Refresh
+            </button>
+        </section>
+
+        <section class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Meeting Room</th>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="bookingsTable">
+                    <tr>
+                        <td colspan="7" id="message">Loading bookings...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <a href="book.html" class="back-link">＋ Book another room</a>
+    </main>
+
+    <footer>© 2026 MeetSpace | Meeting Room Reservation System</footer>
+
+    <script>
+        const API = 'http://localhost:3000';
+
+        async function loadBookings() {
+            const table = document.getElementById('bookingsTable');
+            const button = document.getElementById('refreshButton');
+
+            table.innerHTML =
+                '<tr><td colspan="7" id="message">Loading bookings...</td></tr>';
+
+            button.disabled = true;
+
+            try {
+                const response = await fetch(`${API}/bookings`);
+                const text = await response.text();
+
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    throw new Error(text || 'Invalid server response.');
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || data.error || 'Unable to load bookings.'
+                    );
+                }
+
+                if (!Array.isArray(data)) {
+                    throw new Error('Unexpected booking data from server.');
+                }
+
+                document.getElementById('bookingCount').textContent =
+                    data.length;
+
+                if (data.length === 0) {
+                    table.innerHTML =
+                        '<tr><td colspan="7" id="message">No bookings yet. Book your first meeting room!</td></tr>';
+                    return;
+                }
+
+                table.innerHTML = '';
+
+                data.forEach(booking => {
+                    const row = document.createElement('tr');
+
+                    const values = [
+                        booking.id,
+                        booking.name,
+                        booking.room,
+                        formatDate(booking.booking_date),
+                        formatTime(booking.start_time),
+                        formatTime(booking.end_time)
+                    ];
+
+                    values.forEach(value => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value ?? '';
+                        row.appendChild(cell);
+                    });
+
+                    const actionCell = document.createElement('td');
+                    const cancelButton = document.createElement('button');
+
+                    cancelButton.textContent = 'Cancel';
+                    cancelButton.className = 'cancel';
+                    cancelButton.onclick = () => cancelBooking(booking.id);
+
+                    actionCell.appendChild(cancelButton);
+                    row.appendChild(actionCell);
+                    table.appendChild(row);
+                });
+
+            } catch (error) {
+                table.innerHTML = '';
+
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+
+                cell.colSpan = 7;
+                cell.id = 'message';
+                cell.className = 'error';
+                cell.textContent =
+                    error.message === 'Failed to fetch'
+                        ? 'Cannot connect to server. Please start your backend.'
+                        : error.message;
+
+                row.appendChild(cell);
+                table.appendChild(row);
+
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        function formatDate(value) {
+            if (!value) return '';
+
+            const date = String(value).slice(0, 10);
+            const parts = date.split('-');
+
+            if (parts.length !== 3) return date;
+
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+
+        function formatTime(value) {
+            if (!value) return '';
+
+            const parts = String(value).split(':');
+            let hour = Number(parts[0]);
+            const minute = parts[1];
+
+            const suffix = hour >= 12 ? 'PM' : 'AM';
+            hour = hour % 12 || 12;
+
+            return `${hour}:${minute} ${suffix}`;
+        }
+
+        async function cancelBooking(id) {
+            const confirmed = confirm(
+                `Are you sure you want to cancel booking #${id}?`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`${API}/bookings/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const text = await response.text();
+
+                let data;
+
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    throw new Error(text || 'Invalid server response.');
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || data.error || 'Cancellation failed.'
+                    );
+                }
+
+                alert(data.message || 'Booking cancelled successfully!');
+
+                await loadBookings();
+
+            } catch (error) {
+                alert(
+                    error.message === 'Failed to fetch'
+                        ? 'Cannot connect to server.'
+                        : error.message
+                );
+            }
+        }
+
+        loadBookings();
+    </script>
+
+</body>
+</html>
