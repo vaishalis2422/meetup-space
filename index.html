@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetSpace | Smart Meeting Rooms</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #100b1c;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 8%;
+            border-bottom: 1px solid #302442;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #c4a3ff;
+        }
+
+        nav a {
+            color: #d8d0e8;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #c4a3ff;
+        }
+
+        .hero {
+            min-height: 72vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 70px 8%;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 10px 16px;
+            border: 1px solid #60458a;
+            border-radius: 30px;
+            color: #d3b9ff;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+
+        h1 {
+            font-size: clamp(42px, 6vw, 70px);
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        h1 span {
+            color: #bd94ff;
+        }
+
+        .hero p {
+            color: #b9aecb;
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: #a875f5;
+            color: #160d27;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .btn:hover {
+            background: #c4a3ff;
+        }
+
+        .secondary {
+            background: transparent;
+            border: 1px solid #60458a;
+            color: white;
+        }
+
+        .visual {
+            width: 360px;
+            max-width: 100%;
+            padding: 35px;
+            border-radius: 25px;
+            border: 1px solid #49345f;
+            background: linear-gradient(145deg, #29183e, #171023);
+            box-shadow: 0 20px 70px #00000055;
+        }
+
+        .visual-icon {
+            font-size: 65px;
+            margin-bottom: 25px;
+        }
+
+        .visual h2 {
+            margin-bottom: 12px;
+        }
+
+        .visual p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .mini-card {
+            background: #342347;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 12px;
+            color: #e7dcf8;
+        }
+
+        .features {
+            padding: 30px 8% 80px;
+        }
+
+        .features h2 {
+            font-size: 30px;
+            margin-bottom: 28px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature {
+            padding: 25px;
+            background: #1b1329;
+            border: 1px solid #302442;
+            border-radius: 16px;
+        }
+
+        .feature .icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            margin-bottom: 12px;
+        }
+
+        .feature p {
+            color: #b9aecb;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        footer {
+            border-top: 1px solid #302442;
+            text-align: center;
+            padding: 25px;
+            color: #9588a9;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav a {
+                margin: 0 7px;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .visual {
+                width: 100%;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">✦ MeetSpace</div>
+
+        <div>
+            <a href="index.html">Home</a>
+            <a href="book.html">Book a Room</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="tag">✦ SMART MEETING ROOM MANAGEMENT</div>
+
+            <h1>Meet better.<br><span>Work smarter.</span></h1>
+
+            <p>
+                Find the perfect space for every idea.
+                Reserve meeting rooms, check availability,
+                and manage your bookings in one place.
+            </p>
+
+            <a href="book.html" class="btn">Book a Room →</a>
+            <a href="dashboard.html" class="btn secondary">View Dashboard</a>
+        </div>
+
+        <div class="visual">
+            <div class="visual-icon">🏢</div>
+            <h2>Your space, your schedule.</h2>
+            <p>Everything you need for seamless meeting room reservations.</p>
+
+            <div class="mini-card">📅 Easy Room Booking</div>
+            <div class="mini-card">⚡ Live Availability</div>
+            <div class="mini-card">✓ Simple Booking Management</div>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Everything in one space.</h2>
+
+        <div class="feature-grid">
+            <div class="feature">
+                <div class="icon">🗓️</div>
+                <h3>Easy Reservations</h3>
+                <p>Choose your room, date, and time to create a booking.</p>
+            </div>
+
+            <div class="feature">
+                <div class="icon">📊</div>
+                <h3>Smart Dashboard</h3>
+                <p>View booking statistics and check available rooms.</p>
+            </div>
+
+            <div class="feature">
+                <div class="icon">🔑</div>
+                <h3>Manage Bookings</h3>
+                <p>View your reservations and cancel bookings when needed.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 MeetSpace | Meeting Room Reservation System
+    </footer>
+
+</body>
+</html>

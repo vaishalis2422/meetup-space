@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetSpace | Room Reservation</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6fb;
+            color: #20243a;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 245px;
+            background: #171a35;
+            color: white;
+            padding: 28px 18px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .logo span {
+            color: #8d83ff;
+        }
+
+        .nav-item {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 9px;
+            background: transparent;
+            color: #c4c7dc;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #383b65;
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .muted {
+            color: #777d95;
+            font-size: 14px;
+        }
+
+        .profile {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            box-shadow: 0 4px 18px #20243a08;
+        }
+
+        .stat-label {
+            color: #777d95;
+            font-size: 14px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 15px 0 8px;
+        }
+
+        .purple {
+            color: #7065ed;
+        }
+
+        .green {
+            color: #169b72;
+        }
+
+        .orange {
+            color: #e49a35;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 25px 0 18px;
+        }
+
+        .section-heading h2 {
+            font-size: 21px;
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #eceefa;
+        }
+
+        .room-banner {
+            background: #e9e7ff;
+            height: 115px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 43px;
+        }
+
+        .room-info {
+            padding: 18px;
+        }
+
+        .room-info h3 {
+            margin-bottom: 9px;
+        }
+
+        .room-info p {
+            color: #777d95;
+            font-size: 14px;
+            margin: 9px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e1f8ee;
+            color: #12805b;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 7px 0 12px;
+        }
+
+        .badge.booked {
+            background: #fff0d9;
+            color: #a96b12;
+        }
+
+        .btn {
+            padding: 11px 15px;
+            border: none;
+            border-radius: 8px;
+            background: #7065ed;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: #ecebff;
+            color: #5d52d9;
+        }
+
+        .btn-danger {
+            background: #ffe8e8;
+            color: #c63838;
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dfe2ee;
+            border-radius: 8px;
+            outline: none;
+            background: white;
+            color: #20243a;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #7065ed;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            background: white;
+            border-radius: 13px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 16px;
+            border-bottom: 1px solid #eeeef5;
+            font-size: 14px;
+        }
+
+        th {
+            background: #fafaff;
+            color: #777d95;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #777d95;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 1050px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .room-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .nav-item {
+                display: inline-block;
+                width: auto;
+                margin: 3px;
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .main {
+                padding: 18px;
+            }
+
+            .topbar h1 {
+                font-size: 22px;
+            }
+
+            .profile {
+                display: none;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .stat-number {
+                font-size: 25px;
+            }
+
+            .room-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+/* MeetSpace Premium Theme */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #100b24, #211342, #15102b);
+    color: #f8f7ff;
+    margin: 0;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+h1 {
+    color: #ffffff;
+    font-size: 36px;
+    letter-spacing: -1px;
+    margin-bottom: 28px;
+}
+
+h2, h3 {
+    color: #e7dcff;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 25px 0 35px;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, #2b1d49, #1d1534);
+    border: 1px solid rgba(196, 164, 255, 0.2);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s, border-color 0.25s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: #a78bfa;
+}
+
+.stat-card p {
+    color: #c4a5ff;
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+input, select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 13px 15px;
+    margin: 8px 0 18px;
+    background: #1d1631;
+    color: #ffffff;
+    border: 1px solid #51416e;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #b69aff;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+}
+
+button {
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #1b1430;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    background: #33224f;
+    color: #d8c6ff;
+    text-align: left;
+}
+
+th, td {
+    padding: 15px;
+    border-bottom: 1px solid #38294f;
+}
+
+tr:hover td {
+    background: rgba(167, 139, 250, 0.07);
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 16px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">Meet<span>Space.</span></div>
+
+        <button class="nav-item active"
+                onclick="showSection('dashboard', this)">
+            🏠 Dashboard
+        </button>
+
+        <button class="nav-item"
+                onclick="showSection('rooms', this)">
+            🏢 Meeting Rooms
+        </button>
+
+        <button class="nav-item"
+                onclick="showSection('booking', this)">
+            📅 Book a Room
+        </button>
+
+        <button class="nav-item"
+                onclick="showSection('bookings', this)">
+            📋 My Bookings
+        </button>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p class="muted">
+                    Manage your meeting spaces effortlessly.
+                </p>
+            </div>
+
+            <div class="profile">👤 Admin</div>
+        </header>
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboard" class="section active">
+
+            <div class="stats">
+
+                <div class="card">
+                    <p class="stat-label">Total Rooms</p>
+                    <div class="stat-number purple" id="totalRooms">6</div>
+                    <p class="muted">Available meeting spaces</p>
+                </div>
+
+                <div class="card">
+                    <p class="stat-label">Available Now</p>
+                    <div class="stat-number green" id="availableRooms">6</div>
+                    <p class="muted">Based on current time</p>
+                </div>
+
+                <div class="card">
+                    <p class="stat-label">Total Bookings</p>
+                    <div class="stat-number orange" id="totalBookings">0</div>
+                    <p class="muted">All saved bookings</p>
+                </div>
+
+                <div class="card">
+                    <p class="stat-label">Today's Bookings</p>
+                    <div class="stat-number purple" id="todayBookings">0</div>
+                    <p class="muted">Bookings for today</p>
+                </div>
+
+            </div>
+
+            <div class="section-heading">
+                <h2>Popular Meeting Rooms</h2>
+                <button class="btn btn-secondary"
+                        onclick="showSection('rooms')">
+                    View All
+                </button>
+            </div>
+
+            <div class="room-grid" id="dashboardRooms"></div>
+
+        </section>
+
+        <!-- ROOMS -->
+
+        <section id="rooms" class="section">
+
+            <div class="section-heading">
+                <h2>All Meeting Rooms</h2>
+            </div>
+
+            <div class="panel">
+                <div class="form-group">
+                    <label for="roomSearch">Search Rooms</label>
+                    <input id="roomSearch"
+                           placeholder="Search by room name..."
+                           oninput="renderRooms()">
+                </div>
+            </div>
+
+            <div class="room-grid" id="allRooms"></div>
+
+        </section>
+
+        <!-- BOOKING FORM -->
+
+        <section id="booking" class="section">
+
+            <div class="panel">
+
+                <h2>Reserve a Meeting Room</h2>
+
+                <p class="muted" style="margin:10px 0 25px">
+                    Enter your meeting details below.
+                </p>
+
+                <form id="bookingForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="meetingTitle">
+                                Meeting Title
+                            </label>
+
+                            <input id="meetingTitle"
+                                   placeholder="e.g. Project Discussion"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="organizer">
+                                Organizer Name
+                            </label>
+
+                            <input id="organizer"
+                                   placeholder="Enter your name"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roomSelect">
+                                Select Room
+                            </label>
+
+                            <select id="roomSelect" required></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="participants">
+                                Participants
+                            </label>
+
+                            <input id="participants"
+                                   type="number"
+                                   min="1"
+                                   value="2"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bookingDate">
+                                Meeting Date
+                            </label>
+
+                            <input id="bookingDate"
+                                   type="date"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="startTime">
+                                Start Time
+                            </label>
+
+                            <input id="startTime"
+                                   type="time"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endTime">
+                                End Time
+                            </label>
+
+                            <input id="endTime"
+                                   type="time"
+                                   required>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="btn">
+                        Confirm Booking
+                    </button>
+
+                    <div id="formMessage"
+                         class="message"
+                         aria-live="polite"></div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+        <!-- BOOKINGS -->
+
+        <section id="bookings" class="section">
+
+            <div class="section-heading">
+                <h2>My Bookings</h2>
+
+                <button class="btn btn-secondary"
+                        onclick="renderBookings()">
+                    Refresh
+                </button>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Meeting</th>
+                            <th>Room</th>
+                            <th>Organizer</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="bookingTable"></tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    // Sample meeting rooms
+
+    const rooms = [
+        {
+            id: 1,
+            name: "Innovation Hub",
+            capacity: 10,
+            facilities: "Projector, Wi-Fi",
+            icon: "💡"
+        },
+        {
+            id: 2,
+            name: "Boardroom A",
+            capacity: 20,
+            facilities: "Screen, Video Conference",
+            icon: "🏢"
+        },
+        {
+            id: 3,
+            name: "Creative Studio",
+            capacity: 8,
+            facilities: "Whiteboard, Wi-Fi",
+            icon: "🎨"
+        },
+        {
+            id: 4,
+            name: "Conference Hall",
+            capacity: 50,
+            facilities: "Projector, Audio System",
+            icon: "🎤"
+        },
+        {
+            id: 5,
+            name: "Focus Room",
+            capacity: 4,
+            facilities: "Wi-Fi, Whiteboard",
+            icon: "💻"
+        },
+        {
+            id: 6,
+            name: "Team Space",
+            capacity: 12,
+            facilities: "Screen, Wi-Fi",
+            icon: "👥"
+        }
+    ];
+
+    // Load saved bookings from the browser
+
+    let bookings = JSON.parse(
+        localStorage.getItem("meetspaceBookings") || "[]"
+    );
+
+    const today = getToday();
+
+    document.getElementById("bookingDate").min = today;
+    document.getElementById("bookingDate").value = today;
+
+    function getToday() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    }
+
+    function saveBookings() {
+        localStorage.setItem(
+            "meetspaceBookings",
+            JSON.stringify(bookings)
+        );
+    }
+
+    // Navigation
+
+    function showSection(sectionId, button) {
+
+        document.querySelectorAll(".section").forEach(section => {
+            section.classList.remove("active");
+        });
+
+        document.getElementById(sectionId).classList.add("active");
+
+        document.querySelectorAll(".nav-item").forEach(item => {
+            item.classList.remove("active");
+        });
+
+        if (button) {
+            button.classList.add("active");
+        } else {
+            document.querySelectorAll(".nav-item").forEach(item => {
+                if (item.getAttribute("onclick").includes(sectionId)) {
+                    item.classList.add("active");
+                }
+            });
+        }
+
+        const titles = {
+            dashboard: "Dashboard",
+            rooms: "Meeting Rooms",
+            booking: "Book a Room",
+            bookings: "My Bookings"
+        };
+
+        document.getElementById("pageTitle").textContent =
+            titles[sectionId];
+
+        if (sectionId === "bookings") {
+            renderBookings();
+        }
+
+        if (sectionId === "rooms") {
+            renderRooms();
+        }
+    }
+
+    // Check room availability for a date and time
+
+    function isRoomAvailable(roomId, date, start, end, ignoreId = null) {
+
+        return !bookings.some(booking => {
+
+            if (booking.roomId !== roomId) return false;
+
+            if (booking.date !== date) return false;
+
+            if (booking.id === ignoreId) return false;
+
+            // Overlapping time means the room is unavailable
+
+            return start < booking.endTime &&
+                   end > booking.startTime;
+        });
+    }
+
+    function isAvailableNow(roomId) {
+
+        const now = new Date();
+
+        const currentDate = getToday();
+
+        const currentTime =
+            String(now.getHours()).padStart(2, "0") + ":" +
+            String(now.getMinutes()).padStart(2, "0");
+
+        return isRoomAvailable(
+            roomId,
+            currentDate,
+            currentTime,
+            currentTime === "23:59" ? "24:00" : addOneMinute(currentTime)
+        );
+    }
+
+    function addOneMinute(time) {
+
+        const [hours, minutes] = time.split(":").map(Number);
+
+        const total = hours * 60 + minutes + 1;
+
+        return String(Math.floor(total / 60)).padStart(2, "0") +
+               ":" +
+               String(total % 60).padStart(2, "0");
+    }
+
+    // Room cards
+
+    function roomCard(room) {
+
+        const available = isAvailableNow(room.id);
+
+        return `
+            <div class="room-card">
+
+                <div class="room-banner">
+                    ${room.icon}
+                </div>
+
+                <div class="room-info">
+
+                    <h3>${room.name}</h3>
+
+                    <p>👥 Capacity: ${room.capacity} people</p>
+
+                    <p>✨ ${room.facilities}</p>
+
+                    <span class="badge ${available ? "" : "booked"}">
+                        ${available ? "Available Now" : "Currently Booked"}
+                    </span>
+
+                    <button class="btn btn-block"
+                            onclick="bookRoom(${room.id})">
+                        Book This Room

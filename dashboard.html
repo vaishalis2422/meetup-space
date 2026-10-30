@@ -1,0 +1,427 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | MeetSpace</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #100b1c;
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 8%;
+            border-bottom: 1px solid #302442;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #c4a3ff;
+        }
+
+        nav a {
+            color: #d8d0e8;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #c4a3ff;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: 50px auto;
+            padding: 0 24px;
+        }
+
+        .heading {
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .heading h1 span {
+            color: #bd94ff;
+        }
+
+        .heading p {
+            color: #b9aecb;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #382849;
+            background: linear-gradient(145deg, #211630, #181022);
+        }
+
+        .card .symbol {
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            color: #b9aecb;
+            font-size: 14px;
+            font-weight: normal;
+            margin-bottom: 14px;
+        }
+
+        .number {
+            font-size: 38px;
+            font-weight: bold;
+            color: #c4a3ff;
+        }
+
+        .availability {
+            margin-top: 30px;
+            padding: 28px;
+            background: #1b1329;
+            border: 1px solid #382849;
+            border-radius: 18px;
+        }
+
+        .availability h2 {
+            margin-bottom: 10px;
+        }
+
+        .availability > p {
+            color: #b9aecb;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr) auto;
+            align-items: end;
+            gap: 15px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 13px;
+            color: #d8d0e8;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            background: #120c1e;
+            color: white;
+            border: 1px solid #49345f;
+            border-radius: 9px;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 14px 20px;
+            background: #a875f5;
+            color: #160d27;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #c4a3ff;
+        }
+
+        #result {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 10px;
+            background: #2a1d3c;
+            color: #e5d5ff;
+            line-height: 1.7;
+            display: none;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .quick-links a {
+            text-decoration: none;
+            color: #d8c4ff;
+            border: 1px solid #49345f;
+            border-radius: 10px;
+            padding: 14px 20px;
+        }
+
+        .quick-links a:hover {
+            background: #2a1d3c;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #9588a9;
+            border-top: 1px solid #302442;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            nav a {
+                margin: 0 5px;
+            }
+
+            .stats,
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .heading h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">✦ MeetSpace</div>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="book.html">Book a Room</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="bookings.html">My Bookings</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="heading">
+            <h1>Your <span>Dashboard.</span></h1>
+            <p>Track reservations and check room availability at a glance.</p>
+        </section>
+
+        <section class="stats">
+            <div class="card">
+                <div class="symbol">📅</div>
+                <h3>Total Bookings</h3>
+                <div class="number" id="totalBookings">—</div>
+            </div>
+
+            <div class="card">
+                <div class="symbol">🗓️</div>
+                <h3>Today's Bookings</h3>
+                <div class="number" id="todayBookings">—</div>
+            </div>
+
+            <div class="card">
+                <div class="symbol">🏢</div>
+                <h3>Meeting Rooms</h3>
+                <div class="number" id="totalRooms">—</div>
+            </div>
+
+            <div class="card">
+                <div class="symbol">✨</div>
+                <h3>Available Rooms</h3>
+                <div class="number" id="availableRooms">—</div>
+            </div>
+        </section>
+
+        <section class="availability">
+            <h2>Check Room Availability</h2>
+            <p>Select a date and time slot to see how many rooms are available.</p>
+
+            <form id="availabilityForm" class="filters">
+                <div class="field">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required>
+                </div>
+
+                <div class="field">
+                    <label for="startTime">Start Time</label>
+                    <select id="startTime" required
+                        style="padding:13px;background:#120c1e;color:white;border:1px solid #49345f;border-radius:9px;">
+                        <option value="">Select start</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="endTime">End Time</label>
+                    <select id="endTime" required
+                        style="padding:13px;background:#120c1e;color:white;border:1px solid #49345f;border-radius:9px;">
+                        <option value="">Select end</option>
+                    </select>
+                </div>
+
+                <button type="submit">Check</button>
+            </form>
+
+            <div id="result" role="status" aria-live="polite"></div>
+        </section>
+
+        <div class="quick-links">
+            <a href="book.html">＋ Book a Room</a>
+            <a href="bookings.html">View My Bookings →</a>
+        </div>
+    </main>
+
+    <footer>© 2026 MeetSpace | Meeting Room Reservation System</footer>
+
+    <script>
+        const API = 'http://localhost:3000';
+
+        const dateInput = document.getElementById('date');
+        const startInput = document.getElementById('startTime');
+        const endInput = document.getElementById('endTime');
+        const result = document.getElementById('result');
+
+        const now = new Date();
+        const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, '0'),
+            String(now.getDate()).padStart(2, '0')
+        ].join('-');
+
+        dateInput.min = today;
+
+        function addTimes(select) {
+            for (let hour = 8; hour <= 20; hour++) {
+                for (let minute = 0; minute < 60; minute += 30) {
+                    if (hour === 20 && minute > 0) continue;
+
+                    const value =
+                        String(hour).padStart(2, '0') + ':' +
+                        String(minute).padStart(2, '0');
+
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    select.appendChild(option);
+                }
+            }
+        }
+
+        addTimes(startInput);
+        addTimes(endInput);
+
+        async function loadDashboard(date, startTime, endTime) {
+            const params = new URLSearchParams();
+
+            if (date && startTime && endTime) {
+                params.set('date', date);
+                params.set('startTime', startTime);
+                params.set('endTime', endTime);
+            }
+
+            try {
+                const response = await fetch(
+                    `${API}/dashboard?${params.toString()}`
+                );
+
+                if (!response.ok) {
+                    throw new Error('Dashboard data could not be loaded.');
+                }
+
+                const data = await response.json();
+
+                document.getElementById('totalBookings').textContent =
+                    data.totalBookings;
+
+                document.getElementById('todayBookings').textContent =
+                    data.todayBookings;
+
+                document.getElementById('totalRooms').textContent =
+                    data.totalRooms;
+
+                if (date && startTime && endTime) {
+    document.getElementById('availableRooms').textContent =
+        data.availableRooms;
+} else {
+    document.getElementById('availableRooms').textContent = '—';
+}
+
+                return data;
+            } catch (error) {
+                result.style.display = 'block';
+                result.textContent =
+                    'Unable to load dashboard. Please check that the backend server is running.';
+                return null;
+            }
+        }
+
+        loadDashboard();
+
+        document.getElementById('availabilityForm')
+            .addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                if (endInput.value <= startInput.value) {
+                    result.style.display = 'block';
+                    result.textContent =
+                        'End time must be later than start time.';
+                    return;
+                }
+
+                result.style.display = 'block';
+                result.textContent = 'Checking availability...';
+
+                const data = await loadDashboard(
+                    dateInput.value,
+                    startInput.value,
+                    endInput.value
+                );
+
+                if (data) {
+                    result.textContent =
+                        `${data.availableRooms} of ${data.totalRooms} rooms are available for your selected time.`;
+                }
+            });
+    </script>
+
+</body>
+</html>
